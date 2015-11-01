@@ -17,8 +17,37 @@ module.exports = (app, io) => {
     )
   });
 
+  app.get('/wtf', (req, res) => {
+    for (let i = 1; i < 105; i ++) {
+      const j = i;
+      console.log(j);
+      https.get('https://randomuser.me/api/', (api) => {
+        let body = '';
+        console.log('xx');
+        api.on('data', (chunk) => {
+          body += chunk;
+        });
+        api.on('end', () => {
+          console.log(body);
+          const response = JSON.parse(body);
+          const last = response.results[0].user.name.last;
+          const name = ' ' + name[0].toUpperCase() + name.substr(1);
+
+          app.db(
+            'UPDATE users SET display_name = display_name || $1 WHERE id = $2',
+            [name, j],
+
+            (err, result) => {
+              console.log('done ' + j);
+            }
+          );
+        });
+      });
+    }
+  });
+
   app.post('/register', (req, res) => {
-    https.get('https://randomuser.me/api/', function (api) {
+    https.get('https://randomuser.me/api/', (api) => {
       let body = '';
       api.on('data', (chunk) => {
         body += chunk;
