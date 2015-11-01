@@ -46,6 +46,7 @@ module.exports = (app, io) => {
 
       (err, result) => {
         if (err) return res.status(400).end();
+        io.to(req.body.target).emit('refresh', {});
         app.db(
           'SELECT 1 FROM friendships WHERE user_1 = $1 AND user_2 = $2 AND status = \'pending\'',
           [req.body.target, req.user],
