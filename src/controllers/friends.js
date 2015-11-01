@@ -29,7 +29,7 @@ module.exports = (app, io) => {
 
   app.get('/friends/pending', app.protect, (req, res) => {
     app.db(
-      'SELECT id, display_name, display_img FROM friendships JOIN users ON id = user_1 WHERE user_2 = $1 AND status = \'pending\'',
+      'SELECT id, display_name, display_img, \'requested\' AS status FROM friendships JOIN users ON id = user_1 WHERE user_2 = $1 AND status = \'pending\'',
       [req.user],
 
       (err, result) => {

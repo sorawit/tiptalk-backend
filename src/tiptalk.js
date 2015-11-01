@@ -17,4 +17,4 @@ const io = socket(server);
 require('./core/config')(app, io);
 require('./core/app')(app, io, server);
 
-server.listen(process.env.PORT);
+server.listen(443);
