@@ -15,7 +15,7 @@ module.exports = (app, io) => {
         if (err) return res.status(400).end();
         const token = app.sign(result[0].id);
         res.cookie(app.key, token);
-        res.json({ token: token });
+        res.json({ token: token, id: result[0].id });
       }
     );
   });
@@ -30,7 +30,7 @@ module.exports = (app, io) => {
         if (result.length === 0) return res.status(403).end();
         const token = app.sign(result[0].id);
         res.cookie(app.key, token);
-        res.json({ token: token });
+        res.json({ token: token, id: result[0].id });
       }
     );
   });
