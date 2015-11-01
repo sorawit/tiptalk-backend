@@ -2,6 +2,19 @@
 
 module.exports = (app, io) => {
 
+  app.get('/search', (req, res) => {
+    const searchterm = '%' + req.query.q + '%';
+    app.db(
+      'SELECT id, username, display_name FROM users WHERE username LIKE $1 OR display_name LIKE $2 ORDER BY id',
+      [searchterm, searchterm],
+
+      (err, result) => {
+        if (err) return res.status(500).end();
+        res.json(result);
+      }
+    );
+  });
+
   app.get('/friends', app.protect, (req, res) => {
     app.db(
       'SELECT id, display_name, status FROM friendships JOIN users ON id = user_2 WHERE user_1 = $1',
