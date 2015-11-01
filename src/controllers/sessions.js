@@ -66,7 +66,7 @@ module.exports = (app, io) => {
 
   app.get('/logout', (req, res) => {
     res.clearCookie(app.key);
-    res.status(200).end();
+    res.json({ status: 200 });
   });
 
 };
