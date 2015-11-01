@@ -27,7 +27,7 @@ module.exports = (app, io) => {
   };
 
   // Json web token
-  app.key = 'taptalk-auth';
+  app.key = 'tiptalk-auth';
   app.sign = (id) => jwt.sign(id, secret);
   app.unsign = (token) => jwt.verify(token, secret);
   app.protect = expressJwt({

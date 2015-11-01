@@ -7,13 +7,11 @@ module.exports = (app, io) => {
       'SELECT id FROM friendships JOIN users ON id = user_2 WHERE user_1 = $1 AND status = \'accepted\'', [id], (err, result) => {
         if (err) return;
         for (let row of result) {
-          if (!!io.active[row.id]) {
-            io.to(row.id).emit('status', {
-              id: row.id,
-              online: (!!io.active[id]),
-              peer: io.active[id],
-            });
-          }
+          io.to(row.id + '').emit('status', {
+            id: id,
+            online: (!!io.active[id]),
+            peer: io.active[id],
+          });
         }
     });
   }
@@ -41,14 +39,13 @@ module.exports = (app, io) => {
       broadcast(id);
     });
 
-    socket.on('query', (data /* ids */) => {
-      if (!id) return;
+    socket.on('query', () => {
       app.db(
         'SELECT id FROM friendships JOIN users ON id = user_2 WHERE user_1 = $1 AND status = \'accepted\'', [id], (err, result) => {
           if (err) return;
           socket.emit('query', {
             result: result.filter((row) => {
-              return data.ids.indexOf(row.id) > -1 && (!!io.active[row.id]);
+              return !!io.active[row.id];
             }).map((row) => {
               return {
                 id: row.id,
