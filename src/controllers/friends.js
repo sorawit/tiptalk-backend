@@ -2,11 +2,11 @@
 
 module.exports = (app, io) => {
 
-  app.get('/search', (req, res) => {
+  app.get('/search', app.protect, (req, res) => {
     const searchterm = '%' + req.query.q + '%';
     app.db(
-      'SELECT id, username, display_name FROM users WHERE username LIKE $1 OR display_name LIKE $2 ORDER BY id',
-      [searchterm, searchterm],
+      'SELECT id, username, display_name FROM users u WHERE (username LIKE $1 OR display_name LIKE $2) AND NOT EXISTS (SELECT 1 FROM friendships WHERE (user_1 = u.id AND user_2 = $3) OR (user_1 = $4 AND user_2 = u.id)) AND u.id <> $5 ORDER BY id',
+      [searchterm, searchterm, req.user, req.user, req.user],
 
       (err, result) => {
         if (err) return res.status(500).end();
