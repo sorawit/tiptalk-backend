@@ -1,0 +1,77 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>PeerJS Sample Code</title>
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.14/peer.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script>
+    navigator.getUserMedia =
+      (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+
+    var options = {
+      host: 'localhost',
+      port: '3000',
+      path: '/peerjs',
+    };
+    var peer = new Peer(options);var stream = null;
+
+    peer.on('open', function(id) {
+      // Open connection to peer server. Report your ID to TapTalk please!
+      console.log('My peer ID is: ' + id);
+    });
+
+    peer.on('call', function(call) {
+      // Receive a call.
+
+      // Mute my microphone.
+      stream.getAudioTracks()[0].enabled = false;
+      call.answer(stream);
+
+      call.on('stream', function(_stream) {
+        // Append the other end's stream to autoplay.
+        var audio = $('<audio autoplay />').appendTo('body');
+        audio[0].src = (URL || webkitURL || mozURL).createObjectURL(_stream);
+      });
+
+      call.on('close', function() {
+        // Unmute my microphone.
+        stream.getAudioTracks()[0].enabled = true;
+        console.log('Closed!');
+      });
+
+      call.on('error', function() {
+        console.log('An error occured!');
+      });
+
+      if (false) {
+        // End the call.
+        call.close();
+      }
+    });
+
+    navigator.getUserMedia(
+      {video: false, audio: true},
+
+      function success(s) {
+        stream = s;
+      },
+
+      function error(err) {
+        console.log('Permission denied :(');
+      }
+    );
+
+    if (false && stream !== null) {
+      // Make a call to some peer ID!
+      // Please some how make sure that I'm not calling someone else nor listening to someone.
+      peer.call('peer-id', stream);
+    }
+  </script>
+</body>
+</html>
