@@ -54,7 +54,7 @@ module.exports = (app, io) => {
             if (err) return res.status(500).end();
             if (result.length === 0) return res.status(200).end();
             app.db(
-              'UPDATE friendships SET status = \'accepted\' WHERE (user_1 = $1 AND user_2 = $2) OR (user_1 = $3 or user_2 = $4)',
+              'UPDATE friendships SET status = \'accepted\' WHERE (user_1 = $1 AND user_2 = $2) OR (user_1 = $3 AND user_2 = $4)',
               [req.user, req.body.target, req.body.target, req.user],
 
               (err, result) => {
