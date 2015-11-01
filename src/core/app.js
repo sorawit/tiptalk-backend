@@ -24,6 +24,7 @@ module.exports = (app, io, server) => {
   });
 
   app.use('*', (err, req, res, next) => {
+    console.log(err);
     res.status(403).end();
   });
 };
